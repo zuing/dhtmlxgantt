@@ -314,14 +314,14 @@ GanttProject.prototype.checkWidthProjectNameItem = function()
         this.projectNameItem.innerHTML = pName;
     }
 };
-//zuing modify
+
 GanttProject.prototype.getFinishDate = function()
 {
     var date = new Date(this.Project.StartDate);
     addDate(date, parseInt((this.Duration-1)/this.Chart.hoursInDay+1)-1);
     return date;
 };
-//end zuing modify
+
 /**
  *  @desc: create GanttProject.
  *  @type: private
@@ -718,7 +718,7 @@ GanttChart.prototype.getValueShowProject = function(param)
                 case 3:
                     arrValues.push('PercentComplete');
                     break;
-                case 4://zuing modify
+                case 4:
                     arrValues.push('S-F');
                     break;
                 default:
@@ -1904,7 +1904,7 @@ GanttTask.prototype.setStartDate = function(startDate, shiftChild)
     return true;
 };
 
-//zuing modify
+
 /**
  *  @desc: set planH of the current task
  *     @param:  planH - (int) planH of current task in hours
@@ -1956,7 +1956,6 @@ GanttTask.prototype.setDuration = function(duration)
         return false;
     } 
 	
-	//减少的工时天数
 	//reduce day of duration
 	var day = Math.floor(parseInt(this.TaskInfo.Duration - duration) / this.Chart.hoursInDay);
 
@@ -1966,7 +1965,7 @@ GanttTask.prototype.setDuration = function(duration)
 	this.endResizeItem();
 	if (this.Chart.isShowDescTask)this.descrTask.innerHTML = this.getDescStr();
 
-	//提前后置任务的开始时间
+
 	//reduce startdate of SuccessorTask
 	if (day > 0)
 	{
@@ -1976,7 +1975,6 @@ GanttTask.prototype.setDuration = function(duration)
 			this.childPredTask[i].setStartDate(startdate,true); 
 		}
 	}
-	//比较父任务的结束时间，如果富余则减少父任务工时
 	//if parenttask endtime more then last childtask endtime then reduce parenttask endtime.
 	if (this.parentTask)
 	{
@@ -4001,7 +3999,7 @@ GanttProject.prototype.addEvent = function (elm, evType, fn, useCapture)
  * @type: private
  * @topic: 4
  */
-GanttProject.prototype.getPopUpInfo = function(object, event)//zuing modify
+GanttProject.prototype.getPopUpInfo = function(object, event)
 {
     //this.projectItem[0]
     var posX = object.offsetLeft + ((event.layerX == null) ? event.offsetX : event.layerX);
@@ -4339,7 +4337,7 @@ GanttTask.prototype.resizeTaskAlarm = function()
 {
 	if (parseInt(this.TaskInfo.alarm) >= 0)
 	{
-		//当前时间 大于 报警时间 小于 完成时间 
+		//now() later than Alarm day and now() less than finish day 
 		var now = new Date();
 		var sd = new Date(this.TaskInfo.StartDate);
 		var ed =addDate(new Date(this.getFinishDate()),1);
@@ -4478,7 +4476,7 @@ GanttProject.prototype.getDescStr = function()
                 if (str != "")str += delim;
                 str += this[this.Chart.paramShowProject[i]] + "%";
                 break;
-            case "S-F": //zuing modify
+            case "S-F": 
                 if (str != "")str += delim;
                 var propValue = this.Project.StartDate;
                 str += propValue.getFullYear() + "-" + (propValue.getMonth() + 1) + "-" + propValue.getDate() + " ~ ";
@@ -4644,7 +4642,6 @@ GanttProject.prototype.createProjectItem = function()
         this.addEvent(divTaskInfo, 'mouseover', getPopUpInfo, false);
         this.addEvent(divTaskInfo, 'mouseout', closePopUpInfo, false);
     }
-	//zuing modify select project
 	var div_bg = document.createElement("div");
 	div_bg.id = "bgP_" + this.Project.Id;
     div_bg.style.cssText = ";position:absolute;height:24px;z-index:-1";
@@ -5557,7 +5554,6 @@ GanttTask.prototype.createTaskItem = function()
         //this.addEvent(divResize, 'mouseout', setCursorStandart, false);
     }
 
-	//zuing modify
 
 	var divAlarm = document.createElement("div");
 	divAlarm.id="divAlarm_"+this.TaskInfo.Id;
@@ -5572,7 +5568,7 @@ GanttTask.prototype.createTaskItem = function()
 	imgAlarm.style.width = "0px";
 	if (parseInt(this.TaskInfo.alarm) >= 0)
 	{
-		//当前时间 大于 报警时间 小于 完成时间 
+		//now() later than Alarm day and now() less than finish day 
 
 		var now = new Date();
 		var sd = new Date(this.TaskInfo.StartDate);
@@ -5622,7 +5618,6 @@ GanttTask.prototype.createTaskItem = function()
 
 	//end 
 
-	//zuing modify select task
 	var div_bg = document.createElement("div");
 	div_bg.id = "bg_" + this.TaskInfo.Id;
     div_bg.style.cssText = ";z-index:-1;position:absolute;height:24px";
@@ -5864,19 +5859,7 @@ GanttTask.prototype.toggleTree = function()
 {
 	var self=this;
     var img = document.getElementById("nodeimg_" + this.TaskInfo.Id);
-	/*
-    this.parentTask = null;
-    this.predTask = null;
-    this.childTask = [];
-    this.childPredTask = [];
 
-	this.nextChildTask = null;
-    this.previousChildTask = null;
-    this.nextParentTask = null;
-    this.previousParentTask = null;
-	alert(self.parentTask.TaskInfo.Name);
-
-*/
 	if (self._isOpen)
 	{
 		img.src = self.Chart.imgs + "plus.gif";
@@ -6120,296 +6103,6 @@ function contextMenu(chart)
     this.hideDiv = null;
     this._init();
 }
-/*
-contextMenu.prototype._init = function()
-{
-
-    this.createMenuPanel();
-    this.createHideDiv();
-    this.createTabContainer();
-    this.createTabPanel();
-
-    var self = this;
-    var arrItems = [];
-
-    var tab1 = this.createTab(1, "Rename task", "t", true, this);
-    tab1.addItem(1, "New name", document.createElement("input"), "text", function() {
-        tab1.arrItems[0].control.focus();
-    });
-    tab1.addItem(2, "Rename", document.createElement("input"), "button",
-            function() {
-                var name = tab1.arrItems[0].control.value;
-                try {
-                    tab1.object.setName(name);
-                    tab1.hide();
-                } catch(e) {
-
-                }
-            }
-            );
-
-    var tab2 = this.createTab(2, "Delete task", "t", true, this);
-    tab2.addItem(1, "Delete", document.createElement("input"), "button",
-            function()
-            {
-                try {
-                    tab2.object.Project.deleteTask(tab2.object.TaskInfo.Id);
-                    tab2.hide();
-                }
-                catch(e) {
-
-                }
-            }
-            );
-    var tab3 = this.createTab(3, "Set start date", "t", true, this);
-    tab3.addItem(1, "StartDate", document.createElement("input"), "text", function() {
-        tab3.arrItems[0].control.focus();
-    });
-    tab3.addItem(2, "Move children", document.createElement("input"), "checkbox", function() {
-        tab3.arrItems[1].control.focus();
-    });
-    tab3.addItem(3, "Update", document.createElement("input"), "button",
-            function() {
-                var isMoveChild = tab3.arrItems[1].control.checked;
-                var arr = tab3.arrItems[0].control.value.split(".");
-                var startDate = (arr.length < 3) ? null : (new Date(arr[2], parseInt(arr[1]) - 1, arr[0]));
-                try {
-                    if (tab3.object.setStartDate(startDate, isMoveChild)) tab3.hide();
-                } catch(e) {
-
-                }
-            }
-            );
-
-    var tab4 = this.createTab(4, "Set duration", "t", true, this);
-    tab4.addItem(1, "Duration", document.createElement("input"), "text", function() {
-        tab4.arrItems[0].control.focus();
-    });
-    tab4.addItem(2, "Update", document.createElement("input"), "button",
-            function() {
-                var d = tab4.arrItems[0].control.value;
-                try {
-                    if (tab4.object.setDuration(d)) tab4.hide();
-                } catch(e) {
-
-                }
-            }
-            );
-
-    var tab5 = this.createTab(5, "Set % complete", "t", true, this);
-    tab5.addItem(1, "Percent Complete", document.createElement("input"), "text", function() {
-        tab5.arrItems[0].control.focus();
-    });
-    tab5.addItem(2, "Update", document.createElement("input"), "button",
-            function() {
-                var p = tab5.arrItems[0].control.value;
-                try {
-                    if (tab5.object.setPercentCompleted(p)) tab5.hide();
-                } catch(e) {
-
-                }
-            }
-            );
-
-    var tab13 = this.createTab(13, "Set predecessor", "t", true, this);
-    tab13.addItem(1, "Predecessor", document.createElement("input"), "text", function() {
-        tab13.arrItems[0].control.focus();
-    });
-    tab13.addItem(2, "Update", document.createElement("input"), "button",
-            function() {
-                var p = tab13.arrItems[0].control.value;
-                try {
-                    if (tab13.object.setPredecessor(p)) tab13.hide();
-                } catch(e) {
-
-                }
-            }
-            );
-
-    var tab6 = this.createTab(6, "Rename project", "p", true, this);
-    tab6.addItem(1, "New name", document.createElement("input"), "text", function() {
-        tab6.arrItems[0].control.focus();
-    });
-    tab6.addItem(2, "Rename", document.createElement("input"), "button",
-            function() {
-                var name = tab6.arrItems[0].control.value;
-                try {
-                    tab6.object.setName(name);
-                    tab6.hide();
-                } catch(e) {
-
-                }
-            }
-            );
-
-    var tab7 = this.createTab(7, "Delete project", "p", true, this);
-    tab7.addItem(1, "Delete", document.createElement("input"), "button",
-            function() {
-                try {
-                    tab7.object.Chart.deleteProject(tab7.object.Project.Id);
-                    tab7.hide();
-                } catch(e) {
-
-                }
-            }
-            );
-
-    var tab8 = this.createTab(8, "Set % complete", "p", true, this);
-    tab8.addItem(1, "Percent Complete", document.createElement("input"), "text", function() {
-        tab8.arrItems[0].control.focus();
-    });
-    tab8.addItem(2, "Update", document.createElement("input"), "button",
-            function() {
-                var p = tab8.arrItems[0].control.value;
-                try {
-                    if (tab8.object.setPercentCompleted(p)) tab8.hide();
-                } catch(e) {
-
-                }
-            }
-            );
-
-    var tab9 = this.createTab(9, "Add new task", "p", true, this);
-    tab9.addItem(1, "Id", document.createElement("input"), "text", function() {
-        tab9.arrItems[0].control.focus();
-    });
-    tab9.addItem(2, "Name", document.createElement("input"), "text", function() {
-        tab9.arrItems[1].control.focus();
-    });
-    tab9.addItem(3, "Start date", document.createElement("input"), "text", function() {
-        tab9.arrItems[2].control.focus();
-    });
-    tab9.addItem(4, "Duration", document.createElement("input"), "text", function() {
-        tab9.arrItems[3].control.focus();
-    });
-    tab9.addItem(5, "Percent complete", document.createElement("input"), "text", function() {
-        tab9.arrItems[4].control.focus();
-    });
-    tab9.addItem(6, "Parent task id", document.createElement("input"), "text", function() {
-        tab9.arrItems[5].control.focus();
-    });
-    tab9.addItem(7, "Pred task id", document.createElement("input"), "text", function() {
-        tab9.arrItems[6].control.focus();
-    });
-
-    tab9.addItem(9, "Insert", document.createElement("input"), "button",
-            function() {
-                try {
-                    var id = tab9.arrItems[0].control.value;
-                    var name = tab9.arrItems[1].control.value;
-                    var arr = tab9.arrItems[2].control.value.split(".");
-                    var startDate = (arr.length < 3) ? null : (new Date(arr[2], parseInt(arr[1]) - 1, arr[0]));
-                    var duration = tab9.arrItems[3].control.value;
-                    var pc = tab9.arrItems[4].control.value;
-                    var parentTaskId = tab9.arrItems[5].control.value;
-                    var predTaskId = tab9.arrItems[6].control.value;
-                    if (tab9.object.insertTask(id, name, startDate, duration, pc, predTaskId, parentTaskId)) tab9.hide();
-
-                } catch(e) {
-
-                }
-            }
-            );
-
-    var tab11 = this.createTab(11, "Add successor task", "t", true, this);
-    tab11.addItem(1, "Id", document.createElement("input"), "text", function() {
-        tab11.arrItems[0].control.focus();
-    });
-    tab11.addItem(2, "Name", document.createElement("input"), "text", function() {
-        tab11.arrItems[1].control.focus();
-    });
-    tab11.addItem(3, "Start date", document.createElement("input"), "text", function() {
-        tab11.arrItems[2].control.focus();
-    });
-    tab11.addItem(4, "Duration", document.createElement("input"), "text", function() {
-        tab11.arrItems[3].control.focus();
-    });
-    tab11.addItem(5, "Percent complete", document.createElement("input"), "text", function() {
-        tab11.arrItems[4].control.focus();
-    });
-    tab11.addItem(6, "Insert", document.createElement("input"), "button",
-            function() {
-                try {
-                    var pr = tab11.object.Project;
-                    var id = tab11.arrItems[0].control.value;
-                    var name = tab11.arrItems[1].control.value;
-                    var arr = tab11.arrItems[2].control.value.split(".");
-                    var startDate = (arr.length < 3) ? null : (new Date(arr[2], parseInt(arr[1]) - 1, arr[0]));
-                    var duration = tab11.arrItems[3].control.value;
-                    var pc = tab11.arrItems[4].control.value;
-                    var parentTaskId = (tab11.object.parentTask == null) ? "" : tab11.object.parentTask.TaskInfo.Id;
-                    var predTaskId = tab11.object.TaskInfo.Id;
-                    if (pr.insertTask(id, name, startDate, duration, pc, predTaskId, parentTaskId)) tab11.hide();
-
-                } catch(e) {
-                    //
-                }
-            }
-            );
-
-    var tab10 = this.createTab(10, "Add child task", "t", true, this);
-    tab10.addItem(1, "Id", document.createElement("input"), "text", function() {
-        tab10.arrItems[0].control.focus();
-    });
-    tab10.addItem(2, "Name", document.createElement("input"), "text", function() {
-        tab10.arrItems[1].control.focus();
-    });
-    tab10.addItem(3, "Start date", document.createElement("input"), "text", function() {
-        tab10.arrItems[2].control.focus();
-    });
-    tab10.addItem(4, "Duration", document.createElement("input"), "text", function() {
-        tab10.arrItems[3].control.focus();
-    });
-    tab10.addItem(5, "Percent complete", document.createElement("input"), "text", function() {
-        tab10.arrItems[4].control.focus();
-    });
-    tab10.addItem(6, "Insert", document.createElement("input"), "button",
-            function() {
-                try {
-                    var pr = tab10.object.Project;
-                    var id = tab10.arrItems[0].control.value;
-                    var name = tab10.arrItems[1].control.value;
-                    var arr = tab10.arrItems[2].control.value.split(".");
-                    var startDate = (arr.length < 3) ? null : (new Date(arr[2], parseInt(arr[1]) - 1, arr[0]));
-                    var duration = tab10.arrItems[3].control.value;
-                    var pc = tab10.arrItems[4].control.value;
-                    var parentTaskId = tab10.object.TaskInfo.Id;
-                    var predTaskId = "";
-                    if (pr.insertTask(id, name, startDate, duration, pc, predTaskId, parentTaskId)) tab10.hide();
-
-                } catch(e) {
-                    //
-                }
-            }
-            );
-
-    var tab12 = this.createTab(12, "-Insert new project-", "p", false, this);
-    tab12.addItem(1, "Id", document.createElement("input"), "text", function() {
-        tab12.arrItems[0].control.focus();
-    });
-    tab12.addItem(2, "Name", document.createElement("input"), "text", function() {
-        tab12.arrItems[1].control.focus();
-    });
-    tab12.addItem(3, "Start date", document.createElement("input"), "text", function() {
-        tab12.arrItems[2].control.focus();
-    });
-    tab12.addItem(4, "Insert", document.createElement("input"), "button",
-            function() {
-                try {
-
-                    var id = tab12.arrItems[0].control.value;
-                    var namePr = tab12.arrItems[1].control.value;
-                    var arr = tab12.arrItems[2].control.value.split(".");
-                    var startDatePr = (arr.length < 3) ? null : (new Date(arr[2], parseInt(arr[1]) - 1, arr[0]));
-                    if (self.Chart.insertProject(id, namePr, startDatePr)) tab12.hide();
-
-                } catch(e) {
-
-                }
-            }
-            );
-};
-*/
 
 contextMenu.prototype._init = function()
 {
@@ -6712,7 +6405,6 @@ contextMenu.prototype._init = function()
             }
             );
 
-	//zuing modify
     var tab20 = this.createTab(9,20, lang.labSet+lang.tPlanH, "t", true, this);
     tab20.addItem(1, lang.tPlanH, document.createElement("input"), "text", function() {
         tab20.arrItems[0].control.focus();
@@ -6858,7 +6550,6 @@ contextMenu.prototype.addItemMenuPanel = function(tab)
 
 contextMenu.prototype.showContextMenu = function(x, y, object)
 {
-	//zuing modify
 	var j=0;
     if (object.constructor == GanttTask)
     {
@@ -7111,11 +6802,9 @@ contextMenuTab.prototype.show = function()
     }
     btnCell.appendChild(b);
 
-	//zuing modify
     var myCalendar = new dhtmlXCalendarObject(["cal_startdate"]);
 	myCalendar.loadUserLanguage('zh');
 
-	//zuing modify --add bnt class
 	if (!isIE)
 	{
 		var panel=this.contextMenu.tabPanel
