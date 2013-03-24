@@ -1,11 +1,12 @@
 DhtmlxGantt
 ======
-Base on dhtmlgantt.(The basic APi see [DhtmlGantt](http://dhtmlx.com/docs/products/dhtmlxGantt/index.shtml))  
+Base on dhtmlxgantt.(The basic APi see [DhtmlxGantt](http://dhtmlx.com/docs/products/dhtmlxGantt/index.shtml))  
 Add some Feature like "Alarm day","plan duration","set the endday"...  
-### The basic dhtmlgantt
+### The basic dhtmlxgantt
 ![Screenshot](https://raw.github.com/zuing/dhtmlxgantt/master/dhtmlx3/dhtmlxGantt/codebase/imgs/basic_gantt.jpg)
-### The update dhtmlgantt
-![Screenshot](https://raw.github.com/zuing/dhtmlxgantt/master/dhtmlx3/dhtmlxGantt/codebase/imgs/update_gantt.jpg)
+### The update dhtmlxgantt
+![Screenshot](https://raw.github.com/zuing/
+xgantt/master/dhtmlx3/dhtmlxGantt/codebase/imgs/update_gantt.jpg)
 ##New Features
 * Add Task Property "Plan Duration"
 >if Duration > Plan Duration fill RED   bar.  
