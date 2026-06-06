@@ -1,3 +1,4 @@
+The new version come back 2026
 DhtmlxGantt
 ======
 Base on dhtmlxgantt.(The basic APi see [DhtmlxGantt](http://dhtmlx.com/docs/products/dhtmlxGantt/index.shtml))  
